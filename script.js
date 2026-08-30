@@ -97,7 +97,7 @@ form.addEventListener("submit", async (e) => {
 
             // Wait for user to click OK on alert, then redirect
             await showAlert("success", "Welcome Back", "Authenticated successfully!");
-            window.location.href = "problem-statement.html";
+            window.location.href = "home.html";
         }
     } catch (err) {
         showAlert("error", "Authentication Error", err.message);
