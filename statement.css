@@ -14,13 +14,18 @@
 body,
 button,
 a,
-input {
-    cursor: auto;
+input,
+select,
+textarea {
+    cursor: none !important;
 }
 
 button,
-a {
-    cursor: pointer;
+a,
+input,
+select,
+textarea {
+    cursor: pointer !important;
 }
 
 body {
@@ -31,6 +36,42 @@ body {
     margin: 0;
     overflow-x: hidden;
     position: relative;
+}
+
+/* Custom Smooth Cursor Styles */
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-accent);
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+}
+
+.cursor-outline {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(34, 211, 238, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: width 0.2s, height 0.2s, background-color 0.2s;
+}
+
+.cursor-outline.cursor-hover {
+    width: 54px;
+    height: 54px;
+    background-color: rgba(34, 211, 238, 0.1);
+    border-color: var(--primary-accent);
 }
 
 .bg-glow {
@@ -84,6 +125,48 @@ body {
 
 .border-subtle-custom {
     border-color: var(--border-subtle) !important;
+}
+
+.input-group-cyber {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+.form-control-cyber {
+    width: 100%;
+    padding: 11px 14px 11px 42px;
+    background-color: var(--surface-input);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+.form-control-cyber::placeholder {
+    color: var(--text-muted);
+}
+
+.form-control-cyber:focus {
+    border-color: var(--border-focus);
+    background-color: rgba(31, 41, 61, 0.9);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+}
+
+.form-control-cyber:focus+.input-icon,
+.input-group-cyber:focus-within .input-icon {
+    color: var(--primary-accent);
 }
 
 .btn-cyber-primary {

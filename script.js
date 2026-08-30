@@ -21,9 +21,9 @@ const formTitle = document.getElementById("form-title");
 const formSubtitle = document.getElementById("form-subtitle");
 const toggleText = document.getElementById("toggle-text");
 
-// Helper function for SweetAlert popups
+// Helper function for SweetAlert popups (Returns a Promise so we can wait for click)
 const showAlert = (icon, title, text) => {
-    Swal.fire({
+    return Swal.fire({
         icon: icon,
         title: title,
         text: text,
@@ -87,11 +87,17 @@ form.addEventListener("submit", async (e) => {
                 }
             });
             if (error) throw error;
-            showAlert("success", "Welcome!", `Account created successfully, ${fullName}!`);
+
+            // Wait for user to click OK on alert, then redirect
+            await showAlert("success", "Welcome!", `Account created successfully, ${fullName}!`);
+            window.location.href = "problem-statement.html";
         } else {
             const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
             if (error) throw error;
-            showAlert("success", "Welcome Back", "Authenticated successfully!");
+
+            // Wait for user to click OK on alert, then redirect
+            await showAlert("success", "Welcome Back", "Authenticated successfully!");
+            window.location.href = "problem-statement.html";
         }
     } catch (err) {
         showAlert("error", "Authentication Error", err.message);
