@@ -147,14 +147,22 @@ function renderCustomerBookings(bookings) {
                             <div><i class="bi bi-calendar-event me-1 text-info"></i> Date: ${b.date} at ${b.time}</div>
                             <div><i class="bi bi-geo-alt me-1 text-info"></i> Location: ${b.location}</div>
                             <div><i class="bi bi-card-text me-1 text-info"></i> Note: ${b.description}</div>
+                            ${b.rating ? `<div class="mt-2 text-warning"><i class="bi bi-star-fill me-1"></i> Rating Given: ${b.rating} / 5</div>` : ''}
+                            ${b.feedback ? `<div class="text-info font-monospace small">Feedback: "${b.feedback}"</div>` : ''}
                         </div>
                     </div>
 
                     <div class="mt-3 pt-3 border-top border-secondary">
                         ${b.status === 'Completed' ? `
-                            <button class="btn btn-outline-warning w-100 py-2 rounded-3 fw-bold btn-review-trigger" data-id="${b.id}">
-                                <i class="bi bi-star-fill me-1"></i> Review Completed Service
-                            </button>
+                            ${b.rating ? `
+                                <div class="text-center text-success small font-monospace fw-bold py-2">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Review Already Submitted
+                                </div>
+                            ` : `
+                                <button class="btn btn-outline-warning w-100 py-2 rounded-3 fw-bold btn-review-trigger" data-id="${b.id}">
+                                    <i class="bi bi-star-fill me-1"></i> Review Completed Service
+                                </button>
+                            `}
                         ` : `
                             <div class="text-center text-muted-custom small font-monospace">Status: ${b.status}</div>
                         `}
@@ -203,6 +211,8 @@ function renderProviderBookings(bookings) {
                             <div><i class="bi bi-calendar-event me-1 text-info"></i> Date: ${b.date} at ${b.time}</div>
                             <div><i class="bi bi-geo-alt me-1 text-info"></i> Location: ${b.location}</div>
                             <div><i class="bi bi-card-text me-1 text-info"></i> Note: ${b.description}</div>
+                            ${b.rating ? `<div class="mt-2 text-warning"><i class="bi bi-star-fill me-1"></i> Client Rating: ${b.rating} / 5</div>` : ''}
+                            ${b.feedback ? `<div class="text-info font-monospace small">Client Feedback: "${b.feedback}"</div>` : ''}
                         </div>
                     </div>
 
