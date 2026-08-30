@@ -22,9 +22,9 @@ const bookingBtnText = document.getElementById("booking-btn-text");
 const bookingSpinner = document.getElementById("booking-spinner");
 
 let allProviders = [];
+let userBookings = [];
 let currentUser = null;
 
-// Custom Cursor Setup
 const cursorDot = document.createElement("div");
 const cursorOutline = document.createElement("div");
 
@@ -37,19 +37,9 @@ function initCustomCursor() {
     window.addEventListener("mousemove", (e) => {
         const posX = e.clientX;
         const posY = e.clientY;
-
         cursorDot.style.left = `${posX}px`;
         cursorDot.style.top = `${posY}px`;
-
-        cursorOutline.animate({
-            left: `${posX}px`,
-            top: `${posY}px`
-        }, { duration: 500, fill: "forwards" });
-    });
-
-    document.querySelectorAll("a, button, input, select, textarea").forEach((el) => {
-        el.addEventListener("mouseenter", () => cursorOutline.classList.add("cursor-hover"));
-        el.addEventListener("mouseleave", () => cursorOutline.classList.remove("cursor-hover"));
+        cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
     });
 }
 
@@ -64,35 +54,36 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
 
     const { data: { session }, error } = await supabaseClient.auth.getSession();
-
     if (error || !session) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Authentication Required',
-            text: 'Please sign in to access the service directory.',
-            background: '#111827',
-            color: '#f8fafc',
-            confirmButtonColor: '#22d3ee'
-        }).then(() => {
-            window.location.href = "index.html";
-        });
+        window.location.href = "index.html";
         return;
     }
 
     currentUser = session.user;
     userEmailDisplay.textContent = currentUser.email;
 
+    await fetchUserBookings();
     await fetchProviders();
 });
 
-async function fetchProviders() {
+async function fetchUserBookings() {
     try {
         const { data, error } = await supabaseClient
-            .from('providers')
-            .select('*');
-
+            .from('bookings')
+            .select('*')
+            .eq('customer_email', currentUser.email);
         if (error) throw error;
+        userBookings = data || [];
+    } catch (err) {
+        console.error("Error fetching user bookings:", err);
+        userBookings = [];
+    }
+}
 
+async function fetchProviders() {
+    try {
+        const { data, error } = await supabaseClient.from('providers').select('*');
+        if (error) throw error;
         allProviders = data || [];
         providerCountBadge.textContent = `${allProviders.length} Active`;
         renderProviders(allProviders);
@@ -100,7 +91,7 @@ async function fetchProviders() {
         console.error("Error fetching providers:", err);
         providersGrid.innerHTML = `
             <div class="col-12 text-center py-5">
-                <p class="text-danger small"><i class="bi bi-exclamation-circle me-1"></i> Failed to load providers from Supabase. Ensure 'providers' table exists with data.</p>
+                <p class="text-danger small"><i class="bi bi-exclamation-circle me-1"></i> Failed to load providers from Supabase.</p>
             </div>
         `;
         providerCountBadge.textContent = "0 Active";
@@ -117,33 +108,55 @@ function renderProviders(providers) {
         return;
     }
 
-    providersGrid.innerHTML = providers.map(p => `
-        <div class="col-md-6 col-lg-4 provider-card-item">
-            <div class="cyber-card p-4 rounded-4 d-flex flex-column justify-content-between h-100 border border-secondary position-relative">
-                <div>
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <span class="badge bg-dark text-info border border-secondary px-2.5 py-1 rounded-pill small">${p.category || 'Service'}</span>
-                        <span class="text-warning small fw-bold"><i class="bi bi-star-fill me-1"></i>${p.rating || '4.8'}</span>
-                    </div>
-                    <h5 class="text-white fw-bold mb-1">${p.name}</h5>
-                    <p class="text-primary-accent small mb-3"><i class="bi bi-tools me-1"></i>${p.service_offered || p.category}</p>
-                    
-                    <div class="d-flex flex-column gap-1 text-muted-custom small mb-3">
-                        <div><i class="bi bi-geo-alt me-1 text-info"></i> ${p.location || 'Local Area'}</div>
-                        <div><i class="bi bi-briefcase me-1 text-info"></i> ${p.experience || '3+'} Years Experience</div>
-                        <div><i class="bi bi-tag me-1 text-info"></i> $${p.price_per_hour || '50'}/hr rate</div>
-                    </div>
-                </div>
+    providersGrid.innerHTML = providers.map(p => {
+        // Check if user already has an active booking request for this provider
+        const existingBooking = userBookings.find(b => b.provider_id === p.id);
+        const bookingStatus = existingBooking ? existingBooking.status : null;
 
-                <button class="btn btn-cyber-primary w-100 py-2 rounded-3 fw-bold text-black border-0 mt-3 btn-book-trigger"
+        let actionButtonHTML = '';
+        if (bookingStatus) {
+            const badgeClass = bookingStatus === 'Accepted' ? 'bg-success text-white' : 'bg-warning text-dark';
+            actionButtonHTML = `
+                <button class="btn btn-dark w-100 py-2 rounded-3 fw-bold ${badgeClass} border border-secondary" disabled>
+                    <i class="bi bi-clock-history me-1"></i> Request Status: ${bookingStatus}
+                </button>
+            `;
+        } else {
+            actionButtonHTML = `
+                <button class="btn btn-cyber-primary w-100 py-2 rounded-3 fw-bold text-black border-0 btn-book-trigger"
                     data-id="${p.id}" 
                     data-name="${p.name}" 
                     data-service="${p.service_offered || p.category}">
                     Book Request
                 </button>
+            `;
+        }
+
+        return `
+            <div class="col-md-6 col-lg-4">
+                <div class="cyber-card p-4 rounded-4 d-flex flex-column justify-content-between h-100 border border-secondary position-relative">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-dark text-info border border-secondary px-2.5 py-1 rounded-pill small">${p.category || 'Service'}</span>
+                            <span class="text-warning small fw-bold"><i class="bi bi-star-fill me-1"></i>${p.rating || '4.8'}</span>
+                        </div>
+                        <h5 class="text-white fw-bold mb-1">${p.name}</h5>
+                        <p class="text-primary-accent small mb-3"><i class="bi bi-tools me-1"></i>${p.service_offered || p.category}</p>
+                        
+                        <div class="d-flex flex-column gap-1 text-muted-custom small mb-3">
+                            <div><i class="bi bi-geo-alt me-1 text-info"></i> ${p.location || 'Local Area'}</div>
+                            <div><i class="bi bi-briefcase me-1 text-info"></i> ${p.experience || '3+'} Years Experience</div>
+                            <div><i class="bi bi-tag me-1 text-info"></i> $${p.price_per_hour || '50'}/hr rate</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        ${actionButtonHTML}
+                    </div>
+                </div>
             </div>
-        </div>
-    `).join("");
+        `;
+    }).join("");
 
     document.querySelectorAll(".btn-book-trigger").forEach(btn => {
         btn.addEventListener("click", (e) => {
@@ -159,11 +172,6 @@ function renderProviders(providers) {
             bookingModal.show();
         });
     });
-
-    document.querySelectorAll("button").forEach((el) => {
-        el.addEventListener("mouseenter", () => cursorOutline.classList.add("cursor-hover"));
-        el.addEventListener("mouseleave", () => cursorOutline.classList.remove("cursor-hover"));
-    });
 }
 
 function filterProviders() {
@@ -174,9 +182,7 @@ function filterProviders() {
         const matchesQuery = (p.name && p.name.toLowerCase().includes(query)) ||
             (p.service_offered && p.service_offered.toLowerCase().includes(query)) ||
             (p.location && p.location.toLowerCase().includes(query));
-
         const matchesCategory = selectedCategory === "" || p.category === selectedCategory;
-
         return matchesQuery && matchesCategory;
     });
 
@@ -195,11 +201,6 @@ bookingForm.addEventListener("submit", async (e) => {
     const time = document.getElementById("booking-time").value;
     const location = document.getElementById("booking-location").value.trim();
     const description = document.getElementById("booking-description").value.trim();
-
-    if (!date || !time || !location || !description) {
-        Swal.fire({ icon: 'warning', title: 'Missing Fields', text: 'Please fill out all required booking fields.', background: '#111827', color: '#f8fafc', confirmButtonColor: '#22d3ee' });
-        return;
-    }
 
     const uniqueBookingId = 'BK-' + Math.random().toString(36).substring(2, 9).toUpperCase();
 
@@ -229,14 +230,16 @@ bookingForm.addEventListener("submit", async (e) => {
 
         await Swal.fire({
             icon: 'success',
-            title: 'Booking Request Sent!',
-            text: `Your request has been successfully submitted. Booking ID: ${uniqueBookingId}`,
+            title: 'Request Sent!',
+            text: `Your booking request has been sent successfully.`,
             background: '#111827',
             color: '#f8fafc',
             confirmButtonColor: '#22d3ee'
         });
 
-        window.location.href = "dashboard.html";
+        // Refresh bookings and update UI state directly on the page without redirecting
+        await fetchUserBookings();
+        filterProviders();
 
     } catch (err) {
         Swal.fire({ icon: 'error', title: 'Booking Failed', text: err.message, background: '#111827', color: '#f8fafc', confirmButtonColor: '#22d3ee' });
