@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space Cyan Authentication</title>
+
+    <!-- CDNs -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- Ambient Background Glows -->
+    <div class="bg-glow glow-cyan-1"></div>
+    <div class="bg-glow glow-cyan-2"></div>
+
+    <!-- Main Auth Card Container -->
+    <div class="container min-vh-100 d-flex align-items-center justify-content-center py-5 position-relative z-1">
+        <div class="cyber-card p-4 p-sm-5 rounded-4 w-100" style="max-width: 440px;">
+
+            <!-- Header -->
+            <div class="text-center mb-4 auth-header">
+                <div class="brand-badge mb-3 d-inline-flex align-items-center justify-content-center">
+                    <i class="bi bi-shield-lock-fill fs-3 text-primary-accent"></i>
+                </div>
+                <h2 class="fw-bold tracking-tight mb-2 text-white" id="form-title">Space Access</h2>
+                <p class="text-muted-custom small mb-0" id="form-subtitle">Enter your credentials to continue</p>
+            </div>
+
+            <!-- Credentials Form -->
+            <form id="auth-form" novalidate>
+
+                <!-- Full Name Input (Visible during Sign Up) -->
+                <div class="name-wrapper" id="name-wrapper">
+                    <div class="mb-3 form-group-anim">
+                        <label class="form-label small text-muted-custom mb-1">Full Name</label>
+                        <div class="input-group-cyber">
+                            <i class="bi bi-person input-icon"></i>
+                            <input type="text" id="full-name" class="form-control-cyber" placeholder="John Doe" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Input -->
+                <div class="mb-3 form-group-anim">
+                    <label class="form-label small text-muted-custom mb-1">Email address</label>
+                    <div class="input-group-cyber">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input type="email" id="email" class="form-control-cyber" placeholder="name@domain.com"
+                            required />
+                    </div>
+                </div>
+
+                <!-- Password Input -->
+                <div class="mb-4 form-group-anim">
+                    <label class="form-label small text-muted-custom mb-1">Password</label>
+                    <div class="input-group-cyber">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input type="password" id="password" class="form-control-cyber" placeholder="••••••••"
+                            required />
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button type="submit" id="btn-submit"
+                    class="btn btn-cyber-primary w-100 py-2.5 rounded-3 fw-bold text-black">
+                    <span id="btn-text">Sign In</span>
+                    <span id="btn-spinner" class="spinner-border spinner-border-sm d-none ms-2" role="status"></span>
+                </button>
+            </form>
+
+            <!-- Mode Switch Footer -->
+            <div class="text-center mt-4 auth-footer">
+                <p class="small text-muted-custom mb-0">
+                    <span id="toggle-text">Don't have an account?</span>
+                    <a href="#" id="toggle-auth" class="text-primary-accent text-decoration-none fw-semibold ms-1">Sign
+                        Up</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

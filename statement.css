@@ -1,0 +1,106 @@
+:root {
+    --bg-space: #090d16;
+    --surface-card: #111827;
+    --surface-input: #1f293d;
+    --border-subtle: #2d3748;
+    --border-focus: #38bdf8;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --primary-accent: #22d3ee;
+    --primary-hover: #06b6d4;
+    --shadow-glow: 0 0 25px rgba(34, 211, 238, 0.15);
+}
+
+body,
+button,
+a,
+input {
+    cursor: auto;
+}
+
+button,
+a {
+    cursor: pointer;
+}
+
+body {
+    background-color: var(--bg-space);
+    color: var(--text-main);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.bg-glow {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    filter: blur(140px);
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-cyan-1 {
+    background: var(--primary-accent);
+    top: 10%;
+    left: 15%;
+}
+
+.glow-cyan-2 {
+    background: var(--border-focus);
+    bottom: 10%;
+    right: 15%;
+}
+
+.cyber-card {
+    background: var(--surface-card);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), var(--shadow-glow);
+    position: relative;
+    z-index: 2;
+}
+
+.brand-badge {
+    width: 54px;
+    height: 54px;
+    background: rgba(34, 211, 238, 0.1);
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    border-radius: 14px;
+}
+
+.text-primary-accent {
+    color: var(--primary-accent) !important;
+}
+
+.text-muted-custom {
+    color: var(--text-muted);
+}
+
+.border-subtle-custom {
+    border-color: var(--border-subtle) !important;
+}
+
+.btn-cyber-primary {
+    background: var(--primary-accent);
+    border: none;
+    box-shadow: var(--shadow-glow);
+    transition: all 0.25s ease;
+}
+
+.btn-cyber-primary:hover {
+    background: var(--primary-hover);
+    box-shadow: 0 0 30px rgba(34, 211, 238, 0.4);
+}
+
+.swal2-popup {
+    background: var(--surface-card) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 16px !important;
+    color: var(--text-main) !important;
+}
