@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Providers Profile Directory | Space Cyan</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom Cyber Theme CSS (reuse problem-statement or dashboard CSS) -->
+    <link rel="stylesheet" href="profile.css">
+</head>
+
+<body>
+
+    <div class="bg-glow glow-cyan-1"></div>
+    <div class="bg-glow glow-cyan-2"></div>
+
+    <div class="container py-4 position-relative z-1 animate-wrapper" style="max-width: 1200px;">
+
+        <!-- Top Navigation Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4 p-3 cyber-card rounded-4">
+            <div class="d-flex align-items-center gap-3">
+                <div class="brand-badge d-inline-flex align-items-center justify-content-center m-0"
+                    style="width: 40px; height: 40px;">
+                    <i class="bi bi-person-badge text-primary-accent"></i>
+                </div>
+                <div>
+                    <h5 class="text-white mb-0 fw-bold fs-6">Provider Profiles Directory</h5>
+                    <span id="user-email-display" class="text-muted-custom small">Loading session...</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="home.html" class="btn btn-outline-info btn-sm px-3 rounded-pill fw-semibold">
+                    <i class="bi bi-house me-1"></i> Home
+                </a>
+                <a href="problem-statement.html" class="btn btn-outline-info btn-sm px-3 rounded-pill fw-semibold">
+                    <i class="bi bi-search me-1"></i> Services
+                </a>
+                <a href="dashboard.html" class="btn btn-outline-info btn-sm px-3 rounded-pill fw-semibold">
+                    <i class="bi bi-speedometer2 me-1"></i> Providers
+                </a>
+            </div>
+        </div>
+
+        <!-- Header Title Section -->
+        <div class="cyber-card p-4 rounded-4 mb-4">
+            <h2 class="fw-bold tracking-tight text-white fs-4 mb-1">Registered Service Professionals</h2>
+            <p class="text-muted-custom small mb-0">Browse through our network profiles. Click any professional card to
+                view extended background details and qualifications.</p>
+        </div>
+
+        <!-- Providers Grid Container -->
+        <div class="row g-4" id="profiles-grid">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-info" role="status"></div>
+                <p class="text-muted-custom mt-2 small">Loading provider profiles...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Provider Details Modal (Opens when card is clicked) -->
+    <div class="modal fade" id="providerDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content cyber-card p-4 border border-secondary">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title text-white fw-bold" id="modal-provider-name">Provider Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-3">
+                    <div class="d-flex flex-column gap-3 text-muted-custom small">
+                        <div><strong class="text-white">Specialization:</strong> <span id="modal-provider-spec">-</span>
+                        </div>
+                        <div><strong class="text-white">Experience Level:</strong> <span
+                                id="modal-provider-exp">-</span></div>
+                        <div><strong class="text-white">Hourly Rate / Pricing:</strong> <span
+                                id="modal-provider-rate">-</span></div>
+                        <div><strong class="text-white">Contact Email:</strong> <span id="modal-provider-email">-</span>
+                        </div>
+                        <div><strong class="text-white">Full Biography / Extended Details:</strong>
+                            <p class="text-white mt-1 p-3 bg-dark rounded-3 border border-secondary"
+                                id="modal-provider-bio">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Cursor Elements -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Profile Page Script -->
+    <script src="profile.js"></script>
+</body>
+
+</html>
