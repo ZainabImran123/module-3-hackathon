@@ -14,10 +14,38 @@ const reviewModal = new bootstrap.Modal(reviewModalEl);
 const reviewForm = document.getElementById("review-form");
 const reviewBookingIdInput = document.getElementById("review-booking-id");
 
+const cursorDot = document.querySelector(".cursor-dot");
+const cursorOutline = document.querySelector(".cursor-outline");
+
 let currentUser = null;
 let currentRole = 'customer'; // 'customer' or 'provider'
 
+function initGSAPCursor() {
+    if (!cursorDot || !cursorOutline) return;
+    window.addEventListener("mousemove", (e) => {
+        const posX = e.clientX;
+        const posY = e.clientY;
+
+        gsap.to(cursorDot, {
+            x: posX,
+            y: posY,
+            duration: 0.1,
+            overwrite: "auto"
+        });
+
+        gsap.to(cursorOutline, {
+            x: posX,
+            y: posY,
+            duration: 0.4,
+            ease: "power2.out",
+            overwrite: "auto"
+        });
+    });
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
+    initGSAPCursor();
+
     const { data: { session }, error } = await supabaseClient.auth.getSession();
     if (error || !session) {
         window.location.href = "index.html";
@@ -59,7 +87,6 @@ async function loadDashboardView() {
 
     try {
         if (currentRole === 'customer') {
-            // Fetch bookings made by the current logged-in user email safely without relation joins
             const { data, error } = await supabaseClient
                 .from('bookings')
                 .select('*')
@@ -69,7 +96,6 @@ async function loadDashboardView() {
             if (error) throw error;
             renderCustomerBookings(data || []);
         } else {
-            // Fetch all bookings for provider management view safely without relation joins
             const { data, error } = await supabaseClient
                 .from('bookings')
                 .select('*')
@@ -232,16 +258,29 @@ reviewForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const rating = document.getElementById("review-rating").value;
     const comment = document.getElementById("review-comment").value.trim();
+    const bookingId = reviewBookingIdInput.value;
 
-    reviewModal.hide();
+    try {
+        const { error } = await supabaseClient
+            .from('bookings')
+            .update({ rating: parseInt(rating), feedback: comment })
+            .eq('id', bookingId);
 
-    Swal.fire({
-        icon: 'success',
-        title: 'Review Submitted!',
-        text: 'Thank you for rating your service provider experience.',
-        background: '#111827',
-        color: '#f8fafc',
-        confirmButtonColor: '#22d3ee'
-    });
-    reviewForm.reset();
+        if (error) throw error;
+
+        reviewModal.hide();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Review Submitted!',
+            text: 'Thank you for rating your service provider experience.',
+            background: '#111827',
+            color: '#f8fafc',
+            confirmButtonColor: '#22d3ee'
+        });
+        reviewForm.reset();
+        loadDashboardView();
+    } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Submission Failed', text: err.message, background: '#111827', color: '#f8fafc', confirmButtonColor: '#22d3ee' });
+    }
 });
